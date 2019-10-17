@@ -12,7 +12,7 @@ class ASARProblem(Problem):
         for leg in legs:
             for i in range(len(leg.airplanes)):
                 if state[2*airplanes[i] -1] == leg.departure:
-                    actions.append(Action(2*airplanes[i]-1, leg.departure, leg.duration, leg.maxProfit - leg.profit[i])
+                    actions.append(Action(2*airplanes[i]-1, leg.departure, leg.duration, leg.maxProfit - leg.profit[i]))
         
         return actions
                     
