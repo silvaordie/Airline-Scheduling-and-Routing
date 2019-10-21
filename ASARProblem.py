@@ -12,22 +12,30 @@ class ASARProblem(Problem):
         for leg in legs:
             for i in range(len(leg.airplanes)):
                 if state[2*airplanes[i] -1] == leg.departure:
-                    actions.append(Action(2*airplanes[i]-1, leg.departure, leg.duration, leg.maxProfit - leg.profit[i]))
+                    actions.append(Action(2*airplanes[i]-1, leg.departure, leg.duration+airplanes[i].rotationTime, leg.maxProfit - leg.profit[i])) # é preciso ainda somar a ratation time
         
         return actions
                     
     
     def result(self, state, action):
-        pass
+        new_state=state;
+        new_state.location[action.index] = action.departure
+        new_state.times[action.index] = state.times[action.index] + action.duration
+
+        return new_state
+
     
-    def goal_state(self, state):
-        pass
+    def goal_test(self, state):
+        for l,L in zip(state.locations,state.initialLocations):
+            if(l != L):
+                return False
+        return True
     
     def path_cost(self, c, s1, action, s2):
         return c + action.cost
     
     def heurisitc(state):
-        pass
+        return 0
     
     def load(f):
         pass
