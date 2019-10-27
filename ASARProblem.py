@@ -3,7 +3,10 @@ from search import Problem
 
 class ASARProblem(Problem):
     legs = []
-    
+    airports = []
+    airplanes = []
+    classes = []
+
     def __init__(self, initial, goal = None):
         pass
     
@@ -38,13 +41,35 @@ class ASARProblem(Problem):
         return 0
     
     def load(f):
-        pass
-    
+        for line in f:
+            s=line.split()
+
+            if(s[0]== "A"):
+                airports.append( Airport(s[1], s[2], s[3]) )
+            elif(s[0] == "C")
+                classes.append( AirplaneClass(s[1], s[2]) )
+            elif(s[0] == "P")
+                classes.append( Airplane(s[1], next((x for x in classes if x.name == s[2]), None).rotTime ) )
+            elif(s[0] == "L")
+                avioes = []
+                profits =  []
+                d = s[3]
+                a = next((x for x in airports if x.name == s[1]), None) )
+                b = next((x for x in airports if x.name == s[2]), None) ) 
+
+                for k in range(4,len(s)):
+                    if((k-4)%3 == 0):
+                        durations.append(s[k])
+                    if((k-4)%3 == 1):
+                        avioes.append(next((x for x in classes if x.name == s[k]), None))
+                    if((k-4)%3 == 2):
+                        profits.append(float(s[k]))
+                    
+
+        
     def save(f,s):
         pass
-    
-    
-    
+
 
 class State():   
     initalLocations = []
@@ -72,11 +97,16 @@ class Leg():
 
 class Airplane():
     
-    def __init__(self, rotationTime, airplaneClass, name):
-        self.rotationTime = rotationTime
+    def __init__(self, airplaneClass, name):
         self.airplaneClass = airplaneClass
         self.name = name
-            
+
+class AirplaneClass():
+
+    def __init__(self, airplaneClass, rotTime) :
+        self.name = airplaneClass
+        self.rotTime = rotTime
+
 class Airport():
     
     def __init__(self, name, openingTime, closingTime):
