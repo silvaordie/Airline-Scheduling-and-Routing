@@ -14,8 +14,8 @@ class ASARProblem(Problem):
         actions = []
         for leg in legs:
             for i in range(len(leg.airplanes)):
-                if state[2*airplanes[i] -1] == leg.departure:
-                    actions.append(Action(2*airplanes[i]-1, leg.departure, leg.duration+airplanes[i].rotationTime, leg.maxProfit - leg.profit[i])) # é preciso ainda somar a ratation time
+                if state.locations[leg.airplanes[i]] == leg.departure:
+                    actions.append(Action(leg.airplanes[i], leg.arrival, Time.add( leg.duration , airplanes[leg.airplanes[i]].rotationTime ) , leg.maxProfit - leg4.profit[i])) # é preciso ainda somar a ratation time
         
         return actions
                     
@@ -23,7 +23,7 @@ class ASARProblem(Problem):
     def result(self, state, action):
         new_state=state;
         new_state.location[action.index] = action.departure
-        new_state.times[action.index] = state.times[action.index] + action.duration
+        new_state.times[action.index] = Time.add(state.times[action.index] , action.duration)
 
         return new_state
 
@@ -45,28 +45,30 @@ class ASARProblem(Problem):
             s=line.split()
 
             if(s[0]== "A"):
-                airports.append( Airport(s[1], s[2], s[3]) )
+                airports.append( Airport(s[1], Time(s[2]), Time(s[3])) )
             elif(s[0] == "C")
-                classes.append( AirplaneClass(s[1], s[2]) )
+                for p in airplanes:
+                    if(p.airplaneClass == s[1]):
+                        p.setRotTime( Time(s[2]) )
+
             elif(s[0] == "P")
-                classes.append( Airplane(s[1], next((x for x in classes if x.name == s[2]), None).rotTime ) )
+                airplanes.append( Airplane(s[1], s[2] )
             elif(s[0] == "L")
                 avioes = []
                 profits =  []
-                d = s[3]
+                d = Time(s[3])
                 a = next((x for x in airports if x.name == s[1]), None) )
                 b = next((x for x in airports if x.name == s[2]), None) ) 
 
                 for k in range(4,len(s)):
-                    if((k-4)%3 == 0):
-                        durations.append(s[k])
-                    if((k-4)%3 == 1):
-                        avioes.append(next((x for x in classes if x.name == s[k]), None))
-                    if((k-4)%3 == 2):
-                        profits.append(float(s[k]))
+                    if((k-4)%2 == 0):
+                        for j in range(len(airplanes)):
+                            if(airplanes[j].airplaneclass == s[k]):
+                                avioes.append(j)
+                                profits.append(float(s[k+1]))
+                
+                legs.append(Leg(a,b,d,avioes,profits))
                     
-
-        
     def save(f,s):
         pass
 
@@ -97,9 +99,13 @@ class Leg():
 
 class Airplane():
     
-    def __init__(self, airplaneClass, name):
-        self.airplaneClass = airplaneClass
+    def __init__(self, airplaneClass, name, rotTime):
+        self.airplaneClass = airplaneClass 
         self.name = name
+        self.rotTime = None
+
+    def setRotTime(self, rot):
+        self.rotTime=rot
 
 class AirplaneClass():
 
@@ -116,9 +122,25 @@ class Airport():
 
 class Action():
     
-    def __init__(self, index, departure, duration, cost):
+    def __init__(self, index, arrival, duration, cost):
         self.index = index
-        self.departure = departure
+        self.arrival = arrival
         self.duration = duration
         self.cost = cost
+
+class Time():
+    def __init__(self, s)
+        self.h = int(s[0:1])
+        self.m = int(s[2:3])
+
+    def add(a, b)
+        c = Time('0000')
+        c.h = a.h + b.h
+        c.m = a.m + b.m
+        if(c.m > 59):
+            c.h = c.h+1
+            c.m=c.m-60
+
+        return c
+
         
