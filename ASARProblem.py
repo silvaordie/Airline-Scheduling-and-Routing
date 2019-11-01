@@ -15,7 +15,8 @@ class ASARProblem(Problem):
         for leg in legs:
             for i in range(len(leg.airplanes)):
                 if state.locations[leg.airplanes[i]] == leg.departure:
-                    actions.append(Action(leg.airplanes[i], leg.arrival, Time.add( leg.duration , airplanes[leg.airplanes[i]].rotationTime ) , leg.maxProfit - leg4.profit[i])) # é preciso ainda somar a ratation time
+                	#if leg.duration <= airplanes[leg.airplanes[i]].rotationTime:
+                    actions.append(Action(leg.airplanes[i], leg.arrival, Time.add( leg.duration , airplanes[leg.airplanes[i]].rotationTime ) , leg.maxProfit - leg.profit[i])) # é preciso ainda somar a ratation time
         
         return actions
                     
