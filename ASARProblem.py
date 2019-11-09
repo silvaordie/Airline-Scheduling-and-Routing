@@ -116,7 +116,7 @@ class Leg():
 
 class Airplane():
     
-    def __init__(self, airplaneClass, name, rotTime):
+    def __init__(self, airplaneClass, name ):
         self.airplaneClass = airplaneClass 
         self.name = name
         self.rotTime = None
