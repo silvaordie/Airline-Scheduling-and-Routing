@@ -1,52 +1,59 @@
 from copy import deepcopy
 from search import Problem
-#c :maxProfit-(leg.maxProfit-leg.minProfit)
-#h: leg.maxProfit-airplane.profit
 
 class ASARProblem(Problem):
-
+    
     def __init__(self, initial = None, goal = None):
             self.legs = []
             self.airports = []
             self.airplanes = []
             self.classes = []
+            self.nodes = 0
             self.maxProfit= 0
-
+    #Returns all feasible actions given the current state
     def actions(self, state):
         actions = []
         test=[]
         k=0
         nr_null = 0
         
-        for i in range(0,len(self.airplanes)):
-            if state.locations[i].name == 'NULL':
-                nr_null += 1
+        #for i in range(0,len(self.airplanes)):
+        #    if state.locations[i].name == 'NULL':
+        #        nr_null += 1
             #test.append(self.airplanes[i].name + ' ' + state.locations[i].name + " " + state.times[i].toString())
         #print(test)
         
-        
+        #Searches all the problem's legs + Initial state legs
         for leg in self.legs:
-            if(k<=len(state.legs) and state.legs[k] == 1):
+            #If it is a problem leg
+            if(k<len(state.legs) and state.legs[k] == 1):
+                #Searches all the available planes
                 for i in range(0,len(leg.airplanes)):
                     arrival = leg.duration + state.times[leg.airplanes[i]]
                     duration = leg.duration
                     departure = state.times[leg.airplanes[i]]
+                    #If the plane arrives when the airport is closed, delays the departure
                     if leg.arrival.openingTime > arrival:
                         arrival = leg.arrival.openingTime
                         duration = leg.arrival.openingTime - departure
                         departure = leg.arrival.openingTime - leg.duration
+                    #If the plane is at the leg's airport, departs while it is still open and arrives while the other airport is open, create an action to return
                     if ((state.locations[leg.airplanes[i]].name == leg.departure.name)  and (leg.arrival.closingTime > arrival) and leg.departure.closingTime > departure):
                         #actions.append(Action(leg.airplanes[i], leg.arrival, ( duration + self.airplanes[leg.airplanes[i]].rotTime)  , self.maxProfit - state.profit - leg.profits[i], k, leg.profits[i], departure))
                         actions.append(Action(leg.airplanes[i], leg.arrival, ( duration + self.airplanes[leg.airplanes[i]].rotTime)  , 1+leg.maxProfit-leg.profits[i]+(1/(leg.maxProfit-leg.minProfit)), k, leg.profits[i], departure))
                         #print(self.airplanes[leg.airplanes[i]].name, leg.arrival.name, leg.maxProfit-leg.profits[i]+(1/(leg.maxProfit-leg.minProfit)))
+            #If the leg is an initial state leg
             if(leg.departure.name == "NULL"):
+                #Searches all the problems airplanes
                 for i in range(0,len(leg.airplanes)):
+                    #If the plane has no initial airport create an action to return 
                     if (state.locations[leg.airplanes[i]].name == leg.departure.name ):
-                        actions.append(Action(leg.airplanes[i], leg.arrival, leg.arrival.openingTime , 1+nr_null, k, 0, None))
+                        actions.append(Action(leg.airplanes[i], leg.arrival, leg.arrival.openingTime , 2, k, 0, None))
+                        #actions.append(Action(leg.airplanes[i], leg.arrival, leg.arrival.openingTime , 1+nr_null, k, 0, None))
                         #print(self.airplanes[leg.airplanes[i]].name, leg.arrival.name, nr_null)
             k=k+1
 
-        #input()
+        #Returns all the available actions
         return actions
                     
     def result(self, state, action):
@@ -66,6 +73,7 @@ class ASARProblem(Problem):
             #new_state.solution[action.index] = new_state.solution[action.index] + state.times[action.index].toString() + " " + state.locations[action.index].name + " " + new_state.locations[action.index].name + " " 
        
         #print( new_state.locations[0].name + " " + new_state.locations[1].name)
+        self.nodes= self.nodes+1
         return new_state 
 
     
@@ -90,6 +98,7 @@ class ASARProblem(Problem):
     
     def heuristic(self, state):
         return (self.maxProfit - state.state.profit)/self.maxProfit
+        #return (self.maxProfit - state.state.profit)
         #return 0
         
     def load(self, f):
@@ -161,6 +170,7 @@ class ASARProblem(Problem):
             k+=1
         f.write("P " + str(state.profit))
         print("P " + str(state.profit))
+        print("Nodes:" + str(self.nodes))
 
 class State():   
 
@@ -282,5 +292,3 @@ class Time():
 
     def toString(self):
         return self.h + self.m
-
-        
