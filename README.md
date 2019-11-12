@@ -23,3 +23,9 @@ A state operation consists in moving a single plane from it's current airport if
 * **leg**: Position of the leg that generated the action in the State.legs vector
 * **profit**: Profit gained from executing the action
 * **departure**: Object of type "Airport" in which the plane will depart from
+
+# Cost and heuristic functions #
+For the cost, it is desired to penalize actions that are not the most profitable. Therefore, the cost is defined as the difference between the leg's most profitabble airplane and the chosen airplane to execute the leg.
+``` cost = leg[i].maxProfit - leg[i].profits[k] #i: leg index, k: airplane index```
+
+As for the heuristic, it is desired to make an estimate of the state's future path costs. To guarantee that the A* algorthm finds the optimal solution, the heuristic function must be admissible, i.e. it must not overestimate the future path's cost. The chosen heuristic function returns the 

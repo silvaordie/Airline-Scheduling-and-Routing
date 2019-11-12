@@ -33,7 +33,7 @@ class ASARProblem(Problem):
                         departure = leg.arrival.openingTime - leg.duration
                     #If the plane is at the leg's airport, departs while it is still open and arrives while the other airport is open, create an action to return
                     if ((state.locations[leg.airplanes[i]].name == leg.departure.name)  and (leg.arrival.closingTime > arrival) and leg.departure.closingTime > departure):
-                        actions.append(Action(leg.airplanes[i], leg.arrival, ( duration + self.airplanes[leg.airplanes[i]].rotTime)  , 1+leg.maxProfit-leg.profits[i]+(1/(leg.maxProfit-leg.minProfit)), k, leg.profits[i], departure))
+                        actions.append(Action(leg.airplanes[i], leg.arrival, ( duration + self.airplanes[leg.airplanes[i]].rotTime)  , 1+leg.maxProfit-leg.profits[i], k, leg.profits[i], departure))
                         #actions.append(Action(leg.airplanes[i], leg.arrival, ( duration + self.airplanes[leg.airplanes[i]].rotTime)  , 1/leg.profits[i], k, leg.profits[i], departure))
             #If the leg is an initial state leg
             if(leg.departure.name == "NULL"):
@@ -88,8 +88,8 @@ class ASARProblem(Problem):
         return True
     
     def path_cost(self, c, s1, action, s2):
-        return action.cost
-        #return c + action.cost
+        #return action.cost
+        return c + action.cost
     
     def heuristic(self, state):
         #return (self.maxProfit - state.state.profit)/self.maxProfit
@@ -98,11 +98,10 @@ class ASARProblem(Problem):
         count=0
         for i in range(len(state.state.legs)):
             if state.state.legs[i]:
-                count+=1
+                count+=2
                 total += 1+(1/(self.legs[i].maxProfit-self.legs[i].minProfit))
-                count+=1
         if(count !=0):
-            return total/count
+            return count
         else:
             return 0
       
