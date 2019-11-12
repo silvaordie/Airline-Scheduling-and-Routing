@@ -7,7 +7,7 @@ Before explaining the state representation, it is necessary to define how the Pr
     * classes: Vector of objects of type "Airplane" loaded from the input file
 
 With this in mind, a state is represented by an Object of type "State" with the following attributes:
-    * initialLocations: Vector of objects of type "Airport", State.initialLocations[i] stores the starting airport of ASARProblem.airplanes's i'th plane
+Markup:    * initialLocations: Vector of objects of type "Airport", State.initialLocations[i] stores the starting airport of ASARProblem.airplanes's i'th plane
     * times: Vector of objects of type "Time", times[i] stores the time location of ASARProblem.airplanes's i'th plane
     * locations: Vector of objects of type "Airport", State.locations[i] stores the location of ASARProblem.airplane's i'th plane, in the time instant State.times[i]
     * legs: Vector of booleans (0 or 1), if legs[i]==1 means that the ASARProblem.legs[i] has not yet been made, else the leg as already been completed
