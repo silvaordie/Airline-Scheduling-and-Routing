@@ -25,9 +25,13 @@ A state operation consists in moving a single plane from it's current airport if
 * **departure**: Object of type "Airport" in which the plane will depart from
 
 # Cost and heuristic functions #
-For the cost, it is desired to penalize actions that are not the most profitable. Therefore, the cost is defined as the difference between the leg's most profitabble airplane and the chosen airplane to execute the leg, the + 1  is to guarantee the consitency of our representation, as it is explained below about the heuristic.
-``` cost = 1 + leg[i].maxProfit - leg[i].profits[k] #i: leg index, k: airplane index```
+For the cost, it is desired to penalize actions that are not the most profitable. Therefore, the cost is defined as the difference between the leg's most profitable airplane and the chosen airplane to execute the leg.
+``` cost = leg[i].maxProfit - leg[i].profits[k] #i: leg index, k: airplane index```
 
-As for the heuristic, it is desired to make an estimate of the state's future path costs. To guarantee that the A* algorthm finds the optimal solution, the heuristic function must guarantee the consitency of the A* algorithm, i.e. it must satisfy the following triangular inequality ``` h(n) ≤ c(n,a,n’) + h(n’)``` (for any node n' successor of n using action a). Bearing this in mind, our heuristic is the number of legs that were not completed yet. Considering that we are in a state where x legs were already flown, the hueristic would be N-x, where N is the total number of legs, the cost to go to a successor state would be 1+(leg.maxProfit-leg.profit) and the heuristic of the successor state would be N-x-1 because one more leg was completed. Checking the triangular inequality we have:
-```N-x ≤ 1 + (leg.maxProfit-leg.profit) + N-x-1 = N-x + (leg.maxProfit-leg.profit)```
-Since leg.profit ≤ leg.maxProfit the inequality is always verified, so our heuristic guarantees the consistency of the A* algorithm.
+As for the heuristic, it is desired to make an estimate of the state's future path costs. The heuristic that gave us the best results was the number of legs that are still left to be flown. This heuristic will help the A* algorithm to search in depth for the solution before expanding other nodes that could have the same cost but are more distant to the solution.
+
+# Does the A* algorithm guarantees the optimal solution? #
+In order for the A* algorithm to guarantee the optimal solution the heuristic has to be admissible if the search space is a tree, or consistent if the search space is a graph.
+Why admissible? Having an admissible heuristic implies that the A* will always expand a node that is in the path to the optimal solution before expanding a node that does not lead to an optimal solution, even if that node is a goal (this is only valid if the costs are strictly positive).
+Why consistent? For graphs there are a possibility where two different paths lead to the same node, in this case the A* discards one of the repeated nodes. The consistency guarantees that the A* will never discard the node that is in the path to the optimal goal.
+Our cost and heuristic functions do not guarantee the optimal solution of the algorithm, although they are close to it. It would be easy to transform our cost and heuristic in order to fulfill this requirements, the problem is that if we do it, the search will expand much more nodes, requiring a lot more computational time.
