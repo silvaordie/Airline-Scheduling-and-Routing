@@ -28,7 +28,7 @@ A state operation consists in moving a single plane from it's current airport if
 For the cost, it is desired to penalize actions that are not the most profitable. Therefore, the cost is defined as the difference between the leg's most profitable airplane and the chosen airplane to execute the leg.
 ``` cost = leg[i].maxProfit - leg[i].profits[k] #i: leg index, k: airplane index```
 
-As for the heuristic, it is desired to make an estimate of the state's future path costs. The heuristic that gave us the best results was the number of legs that are still left to be flown. This heuristic will help the A* algorithm to search in depth for the solution before expanding other nodes that could have the same cost but are more distant to the solution.
+As for the heuristic, it is desired to make an estimate of the state's future path costs. If the problem, from the current state to the goal state, flies only the most profitable plane (minimum cost), the future path cost would be the number of legs that are still left to be flown. This heuristic will help the A* algorithm to search in depth for the solution before expanding other nodes that could have the same cost but are more distant to the solution.
 
 # Does the A* algorithm guarantees the optimal solution? #
 In order for the A* algorithm to guarantee the optimal solution the heuristic has to be admissible if the search space is a tree, or consistent if the search space is a graph.
