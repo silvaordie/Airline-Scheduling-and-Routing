@@ -48,3 +48,5 @@ Example 5: Nodes: 91	Depth: 12	Effective Branching Factor: 1.4563
 Example 6: Nodes: 5598	Depth: 10	Effective Branching Factor: 2.3703
 Example 7: Nodes: 4919	Depth: 10	Effective Branching Factor: 2.3398
 Example 8: Nodes: 252	Depth: 12	Effective Branching Factor: 1.5853
+
+The depth of the solution is fixed for a given input and it is given by the number of legs + number of airplanes in a certain file. This conclusion derives from our formulation of the inital state. In the beginning we assign a null airport to each airplane and we had a leg that makes the airplane go from the null airport to a open airport.
