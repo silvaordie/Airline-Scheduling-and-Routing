@@ -8,14 +8,12 @@ class ASARProblem(Problem):
             self.airports = []
             self.airplanes = []
             self.classes = []
+            self.depth = 0
             self.nodes = 0
-            self.maxProfit= 0
     #Returns all feasible actions given the current state
     def actions(self, state):
         actions = []
-        test=[]
         k=0
-        nr_null = 0
         
         #Searches all the problem's legs + Initial state legs
         for leg in self.legs:
@@ -33,8 +31,8 @@ class ASARProblem(Problem):
                         departure = leg.arrival.openingTime - leg.duration
                     #If the plane is at the leg's airport, departs while it is still open and arrives while the other airport is open, create an action to return
                     if ((state.locations[leg.airplanes[i]].name == leg.departure.name)  and (leg.arrival.closingTime > arrival) and leg.departure.closingTime > departure):
-                        actions.append(Action(leg.airplanes[i], leg.arrival, ( duration + self.airplanes[leg.airplanes[i]].rotTime)  , 1+leg.maxProfit-leg.profits[i], k, leg.profits[i], departure))
-                        #actions.append(Action(leg.airplanes[i], leg.arrival, ( duration + self.airplanes[leg.airplanes[i]].rotTime)  , 1/leg.profits[i], k, leg.profits[i], departure))
+                        actions.append(Action(leg.airplanes[i], leg.arrival, ( duration + self.airplanes[leg.airplanes[i]].rotTime)  , leg.maxProfit-leg.profits[i], k, leg.profits[i], departure))
+
             #If the leg is an initial state leg
             if(leg.departure.name == "NULL"):
                 #Searches all the problems airplanes
@@ -42,7 +40,7 @@ class ASARProblem(Problem):
                     #If the plane has no initial airport create an action to return 
                     if (state.locations[leg.airplanes[i]].name == leg.departure.name ):
                         #actions.append(Action(leg.airplanes[i], leg.arrival, leg.arrival.openingTime , 2, k, 0, None))
-                        actions.append(Action(leg.airplanes[i], leg.arrival, leg.arrival.openingTime , 2, k, 0, None))
+                        actions.append(Action(leg.airplanes[i], leg.arrival, leg.arrival.openingTime , 1, k, 0, None))
             k=k+1
 
         #Returns all the available actions
@@ -67,8 +65,8 @@ class ASARProblem(Problem):
         #Adds the current airport to the airplane's path and timeline
         if(state.locations[action.index].name != "NULL"):
             new_state.solution[action.index] = new_state.solution[action.index] + action.departure.toString() + " " + state.locations[action.index].name + " " + new_state.locations[action.index].name + " " 
-
-        self.nodes +=1
+            
+        self.nodes = self.nodes + 1
         return new_state 
 
     
@@ -88,23 +86,15 @@ class ASARProblem(Problem):
         return True
     
     def path_cost(self, c, s1, action, s2):
-        #return action.cost
         return c + action.cost
     
     def heuristic(self, state):
-        #return (self.maxProfit - state.state.profit)/self.maxProfit
-        #return (self.maxProfit - state.state.profit)
-        total = 0
         count=0
         for i in range(len(state.state.legs)):
             if state.state.legs[i]:
-                count+=2
-                total += 1+(1/(self.legs[i].maxProfit-self.legs[i].minProfit))
-        if(count !=0):
-            return count
-        else:
-            return 0
-      
+                count+=1
+        return count
+
     #Loads the problem written in file f 
     def load(self, f):
         self.legs = []
@@ -150,7 +140,6 @@ class ASARProblem(Problem):
                             profits.append(int(s[k+1]))
             
             self.legs.append(Leg(a,b,d,avioes,profits))
-            self.maxProfit = (self.maxProfit + max(profits))
         #Airplane classes
         for s in C:
             for p in self.airplanes:
@@ -168,7 +157,7 @@ class ASARProblem(Problem):
             self.legs.append(Leg(vairports[0],self.airports[k], self.airports[k].openingTime, range(0,len(self.airplanes)), [0] * len(self.airplanes)))
         #Sets the initial state as all planes in ficticial airports
         self.initial = State(vtimes,vairports, len(self.legs)-len(self.airports), self.airplanes)
-
+        self.depth = len(self.legs)
     #Saves the solution, if found, to a file               
     def save(self, f,state):
         if(state!=None):
@@ -179,7 +168,9 @@ class ASARProblem(Problem):
                     f.write(a+ "\n")
                 k+=1
             f.write("P " + str(state.profit))
-        print("Nodes",str(self.nodes))
+        print("Nodes:", str(self.nodes), end = ' ')
+        print("Depth:", str(self.depth), end = ' ')
+        print("Effective branching factor:", pow(self.nodes, 1/self.depth))
 
 #Class that represents a state of the problem
 class State():   
@@ -223,9 +214,6 @@ class Leg():
         #Sets the profit of each plane in self.airplanes [Array of floats]
         self.profits = profits
         self.maxProfit = max(profits)
-        self.minProfit = min(profits)
-        if self.maxProfit == self.minProfit:
-            self.maxProfit = self.minProfit + 1.1
         
 #Class that represents a problem's Airplane
 class Airplane():

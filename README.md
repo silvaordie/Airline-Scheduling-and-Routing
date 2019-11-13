@@ -38,3 +38,13 @@ Why admissible? Having an admissible heuristic implies that the A* will always e
 Why consistent? For graphs there are a possibility where two different paths lead to the same node, in this case the A* discards one of the repeated nodes. The consistency guarantees that the A* will never discard the node that is in the path to the optimal goal.
 
 Our cost and heuristic functions do not guarantee the optimal solution of the algorithm, although they are close to it. It would be easy to transform our cost and heuristic in order to fulfill this requirements, the problem is that if we do it, the search will expand much more nodes, requiring a lot more computational time.
+
+# Number of nodes generated, depth of the solution and effective branching factor #
+Example 1: Nodes: 35	Depth: 10 	Effective Branching Factor: 1.4269
+Example 2: Nodes: 47	Depth: 12	Effective Branching Factor: 1.3783 
+Example 3: Nodes: 177	Depth: 8	Effective Branching Factor: 1.9098
+Example 4: Nodes: 71	Depth: 10	Effective Branching Factor: 1.5315
+Example 5: Nodes: 91	Depth: 12	Effective Branching Factor: 1.4563
+Example 6: Nodes: 5598	Depth: 10	Effective Branching Factor: 2.3703
+Example 7: Nodes: 4919	Depth: 10	Effective Branching Factor: 2.3398
+Example 8: Nodes: 252	Depth: 12	Effective Branching Factor: 1.5853
