@@ -32,6 +32,9 @@ As for the heuristic, it is desired to make an estimate of the state's future pa
 
 # Does the A* algorithm guarantees the optimal solution? #
 In order for the A* algorithm to guarantee the optimal solution the heuristic has to be admissible if the search space is a tree, or consistent if the search space is a graph.
+
 Why admissible? Having an admissible heuristic implies that the A* will always expand a node that is in the path to the optimal solution before expanding a node that does not lead to an optimal solution, even if that node is a goal (this is only valid if the costs are strictly positive).
+
 Why consistent? For graphs there are a possibility where two different paths lead to the same node, in this case the A* discards one of the repeated nodes. The consistency guarantees that the A* will never discard the node that is in the path to the optimal goal.
+
 Our cost and heuristic functions do not guarantee the optimal solution of the algorithm, although they are close to it. It would be easy to transform our cost and heuristic in order to fulfill this requirements, the problem is that if we do it, the search will expand much more nodes, requiring a lot more computational time.
